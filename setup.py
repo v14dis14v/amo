@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='amo',
-      version='0.1',
+      version='0.0.1',
       url='https://github.com/v14dis14v/amo',
       license='MIT',
       author='Vladislav Reshetov',
