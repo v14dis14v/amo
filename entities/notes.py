@@ -1,6 +1,6 @@
 from amo_abstract_entity import AmoAbstract
 
-class Company(AmoAbstract):
+class Notes(AmoAbstract):
     def add(self):
         pass
 

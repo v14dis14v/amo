@@ -1,6 +1,6 @@
 from amo_abstract_entity import AmoAbstract
 
-class Task(AmoAbstract):
+class Contacts(AmoAbstract):
     def add(self):
         pass
 

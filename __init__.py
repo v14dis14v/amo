@@ -1,6 +1,5 @@
 from amo_abstract_entity import AmoAbstract
 from entities import *
-import pprint
 
 
 class Amo(AmoAbstract):
@@ -11,11 +10,11 @@ class Amo(AmoAbstract):
     def __init__(self, url: str, tokens: tuple = None, integration_data: dict = None) -> None:
         super().__init__(url, tokens, integration_data)
 
-        self.contact = Contact(url, tokens, integration_data)
-        self.company = Company(url, tokens, integration_data)
-        self.lead = Lead(url, tokens, integration_data)
-        self.task = Task(url, tokens, integration_data)
-        self.note = Note(url, tokens, integration_data)
+        self.contacts = Contacts(url, tokens, integration_data)
+        self.companies = Companies(url, tokens, integration_data)
+        self.leads = Leads(url, tokens, integration_data)
+        self.tasks = Tasks(url, tokens, integration_data)
+        self.notes = Notes(url, tokens, integration_data)
         self.unsorted = Unsorted(url, tokens, integration_data)
 
     def auth(self, code: str, refresh: bool = True):

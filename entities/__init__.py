@@ -1,7 +1,7 @@
-from entities.lead import Lead
-from entities.contact import Contact
-from entities.company import Company
-from entities.task import Task
+from entities.leads import Leads
+from entities.contacts import Contacts
+from entities.companies import Companies
+from entities.tasks import Tasks
 from entities.unsorted import Unsorted
-from entities.note import Note
+from entities.notes import Notes
 

@@ -1,6 +1,6 @@
 from amo_abstract_entity import AmoAbstract
 
-class Lead(AmoAbstract):
+class Leads(AmoAbstract):
     def add(self):
         pass
 
