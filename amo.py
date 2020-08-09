@@ -7,7 +7,7 @@ class Amo(AmoAbstract):
     Основной класс для работы с amoCRM
     """
 
-    def __init__(self, url: str, tokens: tuple = None, integration_data: dict = None) -> None:
+    def __init__(self, url: str, tokens: dict = None, integration_data: dict = None) -> None:
         super().__init__(url, tokens, integration_data)
 
         self.contacts = Contacts(url, tokens, integration_data)
