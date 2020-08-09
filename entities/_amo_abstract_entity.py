@@ -1,5 +1,4 @@
 import requests
-from amo_exception import AmoException
 
 
 class AmoAbstract:
@@ -92,3 +91,7 @@ class AmoAbstract:
         self.refresh_token = response['refresh_token']
 
         return response
+
+
+class AmoException(Exception):
+    pass

@@ -1,4 +1,4 @@
-from entities.amo_abstract_entity import AmoAbstract
+from entities._amo_abstract_entity import AmoAbstract
 from entities import *
 
 
