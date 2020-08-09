@@ -1,0 +1,2 @@
+class AmoException(Exception):
+    pass
