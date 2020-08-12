@@ -101,7 +101,7 @@ class AmoAbstract:
         else:
             json_params['code'] = code
 
-        response = self._requesting('oauth2/access_token', requests.post, json_params)
+        response = self._requesting('oauth2/access_token', requests.post, json_params, hand_brake=True)
         response = response['_embedded'] if '_embedded' in response else response
 
         if not 'access_token' in response or not 'refresh_token' in response:
@@ -160,7 +160,8 @@ class AmoAbstract:
             params = None
 
         response = self._requesting(lead_url, method, params=params, json=json)
-        if '_embedded' in response:
+
+        if '_embedded' in response and entity in response['_embedded']:
             response = response['_embedded'][entity]
 
         return response
