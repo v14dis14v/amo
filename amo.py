@@ -16,6 +16,21 @@ class Amo(AmoAbstract):
         self.tasks = Tasks(url, tokens, integration_data)
         self.notes = Notes(url, tokens, integration_data)
         self.unsorted = Unsorted(url, tokens, integration_data)
+        self.catalogs = Catalogs(url, tokens, integration_data)
 
-    def auth(self, code: str, refresh: bool = True):
+    def auth(self, code: str, refresh: bool = True) -> dict:
+        """
+        Обмен ключей в amo
+        :param code: Код обмена
+        :param refresh: Ключ обозначачающий, что это обмен ревреш токена
+        :return:
+        """
         return super()._auth(code, refresh)
+
+    def getAccount(self, account_with: str = None):
+        data = {}
+
+        if account_with != None:
+            data['with'] = account_with
+
+        return self._requesting('api/v4/account', self._method_get, params=data)

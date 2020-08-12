@@ -1,8 +1,8 @@
 from entities._amo_abstract_entity import AmoAbstract
 
 
-class Notes(AmoAbstract):
-    def add(self, ):
+class Catalogs(AmoAbstract):
+    def add(self):
         pass
 
     def set(self):

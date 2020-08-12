@@ -1,8 +1,13 @@
+from datetime import datetime
 import requests
+import re
 
 
 class AmoAbstract:
-    """Абстрактный класс сущностей amoCRM"""
+    """
+    Абстрактный класс сущностей amoCRM
+    :var entity: string - название сущности
+    """
 
     def __init__(self, url: str, tokens: dict = None, integration_data: dict = None) -> None:
         """
@@ -13,18 +18,18 @@ class AmoAbstract:
         :param integration_data: Данные об интеграции
               {'integration_id' : '...', 'secret_key' : '...', 'redirect_url': 'www'}
         """
-        self.base_url = 'https://' + url
-        self.domain = url.split('.', 1)
-        self.access_token = None if tokens == None else tokens['access_token']
-        self.refresh_token = None if tokens == None else tokens['refresh_token']
-        self.integration_id = integration_data['integration_id'] if 'integration_id' in integration_data else None
-        self.secret_key = integration_data['secret_key'] if 'secret_key' in integration_data else None
-        self.redirect_url = integration_data['redirect_url'] if 'redirect_url' in integration_data else None
+        self._base_url = 'https://' + url
+        self._domain = url.split('.', 1)
+        self._access_token = None if tokens == None else tokens['access_token']
+        self._refresh_token = None if tokens == None else tokens['refresh_token']
+        self._integration_id = integration_data['integration_id'] if 'integration_id' in integration_data else None
+        self._secret_key = integration_data['secret_key'] if 'secret_key' in integration_data else None
+        self._redirect_url = integration_data['redirect_url'] if 'redirect_url' in integration_data else None
 
-        self.method_get = requests.get
-        self.method_post = requests.post
-        self.method_put = requests.put
-        self.method_delete = requests.delete
+        self._method_get = requests.get
+        self._method_post = requests.post
+        self._method_put = requests.put
+        self._method_delete = requests.delete
 
     def _requesting(self,
                     path: str,
@@ -32,7 +37,7 @@ class AmoAbstract:
                     json: dict = None,
                     params: dict = None,
                     headers: dict = None,
-                    hand_brake: bool = False):
+                    hand_brake: bool = False) -> dict:
         """
         Самый главный курлык на районе
 
@@ -43,24 +48,21 @@ class AmoAbstract:
         :param hand_brake: Ручник для остановки запросов, нужен при повторных запросах при обновлении ключей
         """
 
-        if self.access_token != None:
-            base_headers = {'authorization': 'Bearer ' + self.access_token}
+        if self._access_token != None:
+            base_headers = {'authorization': 'Bearer ' + self._access_token}
             headers = base_headers if headers == None else dict(**headers, **base_headers)
 
-        print(self.base_url)
-        print(path)
-
-        response = requester(f"{self.base_url}/{path}", params=params, json=json, headers=headers)
+        response = requester(f"{self._base_url}/{path}", params=params, json=json, headers=headers)
 
         if response.status_code < 200 or response.status_code > 204:
             raise AmoException(response.json())
 
-        if response.status_code == 401 and self.refresh_token:
+        if response.status_code == 401 and self._refresh_token:
             raise AmoException(response.json())
 
         return response.json()
 
-    def _auth(self, code: str, refresh: bool = True):
+    def _auth(self, code: str, refresh: bool = True) -> dict:
         """
         Обмен кода авторизации на ключи
 
@@ -70,10 +72,10 @@ class AmoAbstract:
         :return dict
         """
         json_params = {
-            'client_id': self.integration_id,
-            'client_secret': self.secret_key,
+            'client_id': self._integration_id,
+            'client_secret': self._secret_key,
             'grant_type': 'refresh_token' if refresh else 'authorization_code',
-            'redirect_uri': self.redirect_url,
+            'redirect_uri': self._redirect_url,
         }
 
         if refresh:
@@ -87,10 +89,106 @@ class AmoAbstract:
         if not 'access_token' in response or not 'refresh_token' in response:
             raise AmoException(response)
 
-        self.access_token = response['access_token']
-        self.refresh_token = response['refresh_token']
+        self._access_token = response['access_token']
+        self._refresh_token = response['refresh_token']
 
         return response
+
+    def _map_custom_fields(self, custom_fields: dict) -> list:
+        """
+        Преобразует массив доп. полей в готовый для отправки по API и фильтрует пустые элементы массива,
+        причем фильтрует обычные поля и мультисписки.
+        :param custom_fields:
+
+        :return: list
+        """
+        new_custom_fields = []
+
+        for id, cf in custom_fields.items():
+            if 'value' in cf and cf['value'] != None:
+                tmp = {'value': cf['value']}
+
+                if 'enum_id' in cf:
+                    tmp['enum_id'] = cf['enum_id']
+
+                if 'enum_code' in cf:
+                    tmp['enum_code'] = cf['enum_code']
+
+                if 'subtype' in cf:
+                    tmp['subtype'] = cf['subtype']
+
+                new_custom_fields.append({'field_id': id, 'values': [tmp]})
+            elif isinstance(cf, dict):
+                cf_filter = {}
+
+                for key, value in cf.items():
+                    if value == None:
+                        continue
+
+                    cf_filter[key] = value
+                new_custom_fields.append({'field_id': id, 'values': cf_filter})
+
+        return new_custom_fields
+
+    def _some_entity_request(self, method: callable, params: dict = None, add_url: str = None):
+        entity = self.__class__.__name__.lower()
+        lead_url = '/api/v4/' + entity
+        json = None
+
+        if add_url != None:
+            lead_url += '/' + add_url
+        if method.__name__ == 'post' or method.__name__ == 'put':
+            json = params
+            params = None
+
+        response = self._requesting(lead_url, method, params=params, json=json)
+        if '_embedded' in response:
+            response = response['_embedded'][entity]
+
+        return response
+
+    def _add_some_entity_note(self,
+                              text: str,
+                              id: int,
+                              note_type: str = 'common',
+                              user: int = None,
+                              created_by: int = None
+                              ) -> int:
+        data = {'params': {'text': text}, 'note_type': note_type}
+
+        if user != None:
+            data['responsible_user_id'] = user
+        if created_by != None:
+            data['created_by'] = created_by
+
+        response = self._some_entity_request(self._method_post, [data], str(id))
+
+        return response[0]['id']
+
+    def _add_some_entity_task(self, text: str, id: int, task_type: int, complete_till: datetime,
+                              user: int = None) -> int:
+        entity = self.__class__.__name__.lower()
+        data = {
+            'text': text,
+            'entity_id': id,
+            'entity_type': entity,
+            'task_type_id': task_type,
+            'complete_till': complete_till.timestamp()
+        }
+
+        if user != None:
+            data['responsible_user_id'] = user
+
+        response = self._requesting('api/v4/tasks', self._method_post, json=data)
+        if '_embedded' in response:
+            response = response['_embedded']['tasks']
+
+        return response[0]['id']
+
+    def phone_clear(self, phone: str) -> str:
+        if len(phone) < 7:
+            return ''
+        return re.compile(r'[^\d]').sub('', phone)
 
 
 class AmoException(Exception):
