@@ -57,10 +57,29 @@ class AmoAbstract:
         if response.status_code < 200 or response.status_code > 204:
             raise AmoException(response.json())
 
-        if response.status_code == 401 and self._refresh_token:
-            raise AmoException(response.json())
+        if response.status_code == 401 and self._refresh_token and hand_brake != False:
+            tokens = self._auth(self._refresh_token, True)
+
+            if not 'access_token' in tokens or not 'refresh_token' in tokens:
+                raise AmoException('Amo auth Error')
+
+            self._access_token = tokens['access_token']
+            self._refresh_token = tokens['refresh_token']
+
+            if self.check_auth():
+                self.save_tokens()
+
+                return self._requesting(path, requester, json, params, headers, True)
+            else:
+                raise AmoException('Amo auth Error')
 
         return response.json()
+
+    def check_auth(self) -> bool:
+        """Проверка правильности ключей"""
+        response = self._requesting('api/v4/account', self._method_get, hand_brake=True)
+
+        return True if 'id' in response else False
 
     def _auth(self, code: str, refresh: bool = True) -> dict:
         """
@@ -165,7 +184,11 @@ class AmoAbstract:
 
         return response[0]['id']
 
-    def _add_some_entity_task(self, text: str, id: int, task_type: int, complete_till: datetime,
+    def _add_some_entity_task(self,
+                              text: str,
+                              id: int,
+                              task_type: int,
+                              complete_till: datetime,
                               user: int = None) -> int:
         entity = self.__class__.__name__.lower()
         data = {
@@ -196,6 +219,9 @@ class AmoAbstract:
         data = {'to_entity_id': to_id, 'to_entity_type': to_entity}
 
         return self._requesting(url, self._method_post, json=data)
+
+    def save_tokens(self):
+        pass
 
 class AmoException(Exception):
     pass

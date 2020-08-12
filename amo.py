@@ -27,7 +27,7 @@ class Amo(AmoAbstract):
         """
         return super()._auth(code, refresh)
 
-    def getAccount(self, account_with: str = None):
+    def get_account(self, account_with: str = None) -> dict:
         data = {}
 
         if account_with != None:
