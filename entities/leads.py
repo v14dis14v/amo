@@ -120,6 +120,10 @@ class Leads(AmoAbstract):
     def delete(self):
         pass
 
+    def link(self, id_from: int, to_entity: str, to_id: int, link: bool) -> dict:
+        """Привязывает сущность к Сделке"""
+        return self._link_entities(id_from, to_entity, to_id, link)
+
     def add_note(self, text: str, id: int, note_type: str = 'common', user: int = None, created_by: int = None) -> int:
         """Создание примечания в Сделку"""
         return self._add_some_entity_note(text, id, note_type, user, created_by)

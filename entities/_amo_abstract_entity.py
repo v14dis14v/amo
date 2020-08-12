@@ -190,6 +190,12 @@ class AmoAbstract:
             return ''
         return re.compile(r'[^\d]').sub('', phone)
 
+    def _link_entities(self, id_from: int, to_entity: str, to_id: int, link: bool) -> dict:
+        entity = self.__class__.__name__.lower()
+        url = f'api/v4/{entity}/{int(id_from)}' + 'link' if link else 'unlink'
+        data = {'to_entity_id': to_id, 'to_entity_type': to_entity}
+
+        return self._requesting(url, self._method_post, json=data)
 
 class AmoException(Exception):
     pass
