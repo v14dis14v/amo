@@ -120,7 +120,7 @@ class Contacts(AmoAbstract):
     def delete(self):
         pass
 
-    def find_contact_by_email(self, email: str) -> dict:
+    def find_by_email(self, email: str) -> dict:
         """"
         Ищет Контакт по email
         :param email: Мыло
@@ -137,7 +137,7 @@ class Contacts(AmoAbstract):
 
         return {}
 
-    def find_contact_by_phone(self, phone: str) -> dict:
+    def find_by_phone(self, phone: str) -> dict:
         """"
         Ищет Контакт по email
         :param phone: Телефон
@@ -153,7 +153,7 @@ class Contacts(AmoAbstract):
             for cf in contact['custom_fields_values']:
                 if 'field_code' in cf and cf['field_code'] == 'PHONE':
                     for value in cf['values']:
-                        if phone == self.phone_clear(value['value']):
+                        if clear_phone == self.phone_clear(value['value']):
                             return contact
 
         return {}
