@@ -58,6 +58,9 @@ class AmoAbstract:
 
         response = requester(f"{self._base_url}/{path}", params=params, json=json, headers=headers)
 
+        if response.status_code == 204:
+            return {}
+
         if response.status_code == 401 and self._refresh_token and not hand_brake:
             tokens = self._auth(self._refresh_token, True)
 
@@ -152,7 +155,7 @@ class AmoAbstract:
 
     def _some_entity_request(self, method: callable, params: dict = None, add_url: str = None):
         entity = self.__class__.__name__.lower()
-        lead_url = '/api/v4/' + entity
+        lead_url = 'api/v4/' + entity
         json = None
 
         if add_url != None:
