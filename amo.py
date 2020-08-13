@@ -34,3 +34,9 @@ class Amo(AmoAbstract):
             data['with'] = account_with
 
         return self._requesting('api/v4/account', self._method_get, params=data)
+
+    def set_save_tokens(self, save_tokens: callable):
+        AmoAbstract.save_tokens = save_tokens
+
+    def set_user(self, user):
+        AmoAbstract.user = user

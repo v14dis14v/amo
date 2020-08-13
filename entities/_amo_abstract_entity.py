@@ -48,8 +48,9 @@ class AmoAbstract:
         :param hand_brake: Ручник для остановки запросов, нужен при повторных запросах при обновлении ключей
         """
 
-        if self._access_token != None and not hand_brake:
+        if self._access_token != None:
             base_headers = {'authorization': 'Bearer ' + self._access_token}
+            headers_without_token = headers
             headers = base_headers if headers == None else dict(**headers, **base_headers)
 
         response = requester(f"{self._base_url}/{path}", params=params, json=json, headers=headers)
@@ -65,12 +66,10 @@ class AmoAbstract:
 
             if self.check_auth():
                 self.save_tokens()
-                return self._requesting(path, requester, json, params, headers, True)
-            else:
-                raise AmoException('Amo auth Error')
 
+            return self._requesting(path, requester, json, params, headers_without_token, True)
         if response.status_code < 200 or response.status_code > 204:
-            raise AmoException(response.json())
+            raise AmoException('Something wrong')
 
         return response.json()
 
@@ -222,6 +221,7 @@ class AmoAbstract:
 
     def save_tokens(self):
         pass
+
 
 class AmoException(Exception):
     pass
