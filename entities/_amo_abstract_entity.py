@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Union
+
 import requests
 import re
 
@@ -34,7 +36,7 @@ class AmoAbstract:
     def _requesting(self,
                     path: str,
                     requester: callable,
-                    json: dict = None,
+                    json: Union[dict, list] = None,
                     params: dict = None,
                     headers: dict = None,
                     hand_brake: bool = False) -> dict:
@@ -48,9 +50,10 @@ class AmoAbstract:
         :param hand_brake: Ручник для остановки запросов, нужен при повторных запросах при обновлении ключей
         """
 
+        headers_without_token = headers
+
         if self._access_token != None:
             base_headers = {'authorization': 'Bearer ' + self._access_token}
-            headers_without_token = headers
             headers = base_headers if headers == None else dict(**headers, **base_headers)
 
         response = requester(f"{self._base_url}/{path}", params=params, json=json, headers=headers)
@@ -209,15 +212,19 @@ class AmoAbstract:
             return ''
         return re.compile(r'[^\d]').sub('', phone)
 
-    def _link_entities(self, id_from: int, to_entity: str, to_id: int, link: bool) -> dict:
-        entity = self.__class__.__name__.lower()
-        url = f'api/v4/{entity}/{int(id_from)}' + 'link' if link else 'unlink'
+    def _link_entities(self, id_from: int, to_entity: str, to_id: int, metadata: dict = None) -> dict:
         data = {'to_entity_id': to_id, 'to_entity_type': to_entity}
 
-        return self._requesting(url, self._method_post, json=data)
+        if metadata:
+            data['metadata'] = metadata
 
-    def save_tokens(self):
-        pass
+        return self._links_entities(id_from, [data])
+
+    def _links_entities(self, id_from: int, data: list) -> dict:
+        entity = self.__class__.__name__.lower()
+        url = f'api/v4/{entity}/{int(id_from)}/link'
+
+        return self._requesting(url, self._method_post, json=data)
 
     def _prepare_response(self, response: dict, entity_key: str) -> dict:
         if '_embedded' in response:
@@ -227,6 +234,10 @@ class AmoAbstract:
             response = response[entity_key]
 
         return response
+
+
+    def save_tokens(self):
+        pass
 
 class AmoException(Exception):
     pass

@@ -124,6 +124,10 @@ class Leads(AmoAbstract):
         """Привязывает сущность к Сделке"""
         return self._link_entities(id_from, to_entity, to_id, link)
 
+    def links(self, id_from: int, data: list) -> dict:
+        """Массовая привязка сущностей к Сделке"""
+        return self._links_entities(id_from, data)
+
     def add_note(self, text: str, id: int, note_type: str = 'common', user: int = None, created_by: int = None) -> int:
         """Создание примечания в Сделку"""
         return self._add_some_entity_note(text, id, note_type, user, created_by)
