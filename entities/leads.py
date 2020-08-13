@@ -54,7 +54,7 @@ class Leads(AmoAbstract):
 
     def get(self,
             id: int,
-            lead_with: list = None,
+            lead_with: str = None,
             query: Union[str, int] = None,
             filter: dict = None,
             order: dict = None) -> dict:
@@ -69,7 +69,7 @@ class Leads(AmoAbstract):
         params = {}
 
         if lead_with != None:
-            params['with'] = ','.join(lead_with)
+            params['with'] = lead_with
         if query != None:
             params['query'] = query
         if filter != None:
@@ -79,7 +79,7 @@ class Leads(AmoAbstract):
         return self._some_entity_request(self._method_get, params, str(id))
 
     def getList(self,
-                lead_with: list = None,
+                lead_with: str = None,
                 query: Union[str, int] = None,
                 filter: dict = None,
                 order: dict = None) -> list:
@@ -99,7 +99,7 @@ class Leads(AmoAbstract):
         results = []
 
         if lead_with != None:
-            params['with'] = ','.join(lead_with)
+            params['with'] = lead_with
         if query != None:
             params['query'] = query
         if filter != None:

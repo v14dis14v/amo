@@ -42,7 +42,7 @@ class Companies(AmoAbstract):
 
     def get(self,
             id: int,
-            company_with: list = None,
+            company_with: str = None,
             query: Union[str, int] = None,
             filter: dict = None,
             order: dict = None) -> dict:
@@ -57,7 +57,7 @@ class Companies(AmoAbstract):
         params = {}
 
         if company_with != None:
-            params['with'] = ','.join(company_with)
+            params['with'] = company_with
         if query != None:
             params['query'] = query
         if filter != None:
@@ -68,7 +68,7 @@ class Companies(AmoAbstract):
         return self._some_entity_request(self._method_get, params, str(id))
 
     def getList(self,
-                company_with: list = None,
+                company_with: str = None,
                 query: Union[str, int] = None,
                 filter: dict = None,
                 order: dict = None) -> list:
@@ -88,7 +88,7 @@ class Companies(AmoAbstract):
         results = []
 
         if company_with != None:
-            params['with'] = ','.join(company_with)
+            params['with'] = company_with
         if query != None:
             params['query'] = query
         if filter != None:

@@ -53,7 +53,7 @@ class Contacts(AmoAbstract):
 
     def get(self,
             id: int,
-            contact_with: list = None,
+            contact_with: str = None,
             query: Union[str, int] = None,
             filter: dict = None,
             order: dict = None) -> dict:
@@ -68,7 +68,7 @@ class Contacts(AmoAbstract):
         params = {}
 
         if contact_with != None:
-            params['with'] = ','.join(contact_with)
+            params['with'] = contact_with
         if query != None:
             params['query'] = query
         if filter != None:
@@ -79,7 +79,7 @@ class Contacts(AmoAbstract):
         return self._some_entity_request(self._method_get, params, str(id))
 
     def getList(self,
-                contact_with: list = None,
+                contact_with: str = None,
                 query: Union[str, int] = None,
                 filter: dict = None,
                 order: dict = None) -> list:
@@ -99,7 +99,7 @@ class Contacts(AmoAbstract):
         results = []
 
         if contact_with != None:
-            params['with'] = ','.join(contact_with)
+            params['with'] = contact_with
         if query != None:
             params['query'] = query
         if filter != None:
