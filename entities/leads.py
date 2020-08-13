@@ -120,9 +120,9 @@ class Leads(AmoAbstract):
     def delete(self):
         pass
 
-    def link(self, id_from: int, to_entity: str, to_id: int, link: bool) -> dict:
+    def link(self, id_from: int, to_entity: str, to_id: int, metadata: dict = None, link: bool = True) -> dict:
         """Привязывает сущность к Сделке"""
-        return self._link_entities(id_from, to_entity, to_id, link)
+        return self._link_entities(id_from, to_entity, to_id, metadata, link)
 
     def links(self, id_from: int, data: list) -> dict:
         """Массовая привязка сущностей к Сделке"""
