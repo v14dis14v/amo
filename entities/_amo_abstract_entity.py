@@ -195,7 +195,7 @@ class AmoAbstract:
             'entity_id': id,
             'entity_type': entity,
             'task_type_id': task_type,
-            'complete_till': complete_till.timestamp()
+            'complete_till': int(complete_till.timestamp())
         }
 
         if user != None:
