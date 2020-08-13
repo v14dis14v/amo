@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from entities._amo_abstract_entity import AmoAbstract
 from typing import Union
 from datetime import datetime
@@ -45,6 +47,7 @@ class Leads(AmoAbstract):
             for tag_id, tag in tags.items():
                 data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
 
+        pprint(data)
         response = self._some_entity_request(method=self._method_post, params=[data])
 
         return response[0]['id']

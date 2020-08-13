@@ -141,7 +141,7 @@ class AmoAbstract:
                     tmp['subtype'] = cf['subtype']
 
                 new_custom_fields.append({'field_id': id, 'values': [tmp]})
-            elif isinstance(cf, dict):
+            elif isinstance(cf, dict) and not 'value' in cf:
                 cf_filter = {}
 
                 for key, value in cf.items():
