@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from entities._amo_abstract_entity import AmoAbstract
 from typing import Union
 from datetime import datetime
@@ -45,12 +47,13 @@ class Leads(AmoAbstract):
             for tag_id, tag in tags.items():
                 data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
 
+        pprint(data)
         response = self._some_entity_request(method=self._method_post, params=[data])
 
         return response[0]['id']
 
     def set(self):
-        self._some_entity_request()
+        pass
 
     def get(self,
             id: int,
@@ -76,7 +79,7 @@ class Leads(AmoAbstract):
             params['filter'] = filter
         if order != None:
             params['order'] = order
-        return self._some_entity_request(self._method_get, params, str(id))
+        return self._some_entity_request(self._method_get, params, str(id), strip_response=False)
 
     def getList(self,
                 lead_with: str = None,

@@ -153,7 +153,7 @@ class AmoAbstract:
 
         return new_custom_fields
 
-    def _some_entity_request(self, method: callable, params: dict = None, add_url: str = None):
+    def _some_entity_request(self, method: callable, params: dict = None, add_url: str = None, strip_response: bool = True):
         entity = self.__class__.__name__.lower()
         lead_url = 'api/v4/' + entity
         json = None
@@ -166,7 +166,7 @@ class AmoAbstract:
 
         response = self._requesting(lead_url, method, params=params, json=json)
 
-        return self._prepare_response(response, entity)
+        return self._prepare_response(response, entity) if strip_response else response
 
     def _add_some_entity_note(self,
                               text: str,

@@ -65,7 +65,7 @@ class Companies(AmoAbstract):
         if order != None:
             params['order'] = order
 
-        return self._some_entity_request(self._method_get, params, str(id))
+        return self._some_entity_request(self._method_get, params, str(id), strip_response=False)
 
     def getList(self,
                 company_with: str = None,
