@@ -13,10 +13,12 @@ class Catalogs(AmoAbstract):
 
         response = self.add_elements(catalog_id, [json])
 
-        return self._prepare_response(response, 'elements')
+        return self._prepare_response(response, 'elements')[0]['id']
 
     def add_elements(self, catalog_id: int, data: list) -> dict:
-        response = self._some_entity_request(add_url=f'{str(catalog_id)}/elements', method=self._method_post, json=data)
+        response = self._some_entity_request(add_url=f'{str(catalog_id)}/elements',
+                                             method=self._method_post,
+                                             params=data)
 
         return self._prepare_response(response, 'elements')
 
