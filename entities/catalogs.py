@@ -42,8 +42,8 @@ class Catalogs(AmoAbstract):
 
         while True:
             response = self._some_entity_request(add_url=f'{str(id)}/elements', method=self._method_get, params=params)
-            if '_embedded' in response and 'elements' in response['_embedded']:
-                results.extend(response['_embedded']['elements'])
+            if 'elements' in response:
+                results.extend(response['elements'])
                 params['page'] += 1
             else:
                 break
