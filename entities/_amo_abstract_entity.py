@@ -160,10 +160,7 @@ class AmoAbstract:
 
         response = self._requesting(lead_url, method, params=params, json=json)
 
-        if '_embedded' in response and entity in response['_embedded']:
-            response = response['_embedded'][entity]
-
-        return response
+        return self._prepare_response(response, entity)
 
     def _add_some_entity_note(self,
                               text: str,
@@ -222,6 +219,14 @@ class AmoAbstract:
     def save_tokens(self):
         pass
 
+    def _prepare_response(self, response: dict, entity_key: str) -> dict:
+        if '_embedded' in response:
+            response = response['_embedded']
+
+        if entity_key in response:
+            response = response[entity_key]
+
+        return response
 
 class AmoException(Exception):
     pass
