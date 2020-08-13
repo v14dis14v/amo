@@ -204,11 +204,9 @@ class AmoAbstract:
         if user != None:
             data['responsible_user_id'] = user
 
-        response = self._requesting('api/v4/tasks', self._method_post, json=data)
-        if '_embedded' in response:
-            response = response['_embedded']['tasks']
+        response = self._requesting('api/v4/tasks', self._method_post, json=[data])
 
-        return response[0]['id']
+        return self._prepare_response(response, 'tasks')[0]['id']
 
     def phone_clear(self, phone: str) -> str:
         if len(phone) < 7:
@@ -238,9 +236,9 @@ class AmoAbstract:
 
         return response
 
-
     def save_tokens(self):
         pass
+
 
 class AmoException(Exception):
     pass
