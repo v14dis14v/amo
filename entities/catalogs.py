@@ -9,7 +9,7 @@ class Catalogs(AmoAbstract):
         json = {'name': name}
 
         if custom_fields_values != None:
-            json['custom_fields_values'] = custom_fields_values
+            json['custom_fields_values'] = self._map_custom_fields(custom_fields_values)
 
         response = self.add_elements(catalog_id, [json])
 
