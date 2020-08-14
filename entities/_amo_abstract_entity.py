@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Union
-
+from pprint import pformat
 import requests
 import re
 
@@ -56,7 +56,7 @@ class AmoAbstract:
             base_headers = {'authorization': 'Bearer ' + self._access_token}
             headers = base_headers if headers == None else dict(**headers, **base_headers)
 
-        response = requester(f"{self._base_url}/{path}", params=params, json=json, headers=headers)
+        response = requester(f'{self._base_url}/{path}', params=params, json=json, headers=headers)
 
         if response.status_code == 204:
             return {}
@@ -65,7 +65,7 @@ class AmoAbstract:
             tokens = self._auth(self._refresh_token, True)
 
             if not 'access_token' in tokens or not 'refresh_token' in tokens:
-                raise AmoException('Amo auth Error')
+                raise AmoException(f'Auth Error. \n url > {response.url}')
 
             self._access_token = tokens['access_token']
             self._refresh_token = tokens['refresh_token']
@@ -75,11 +75,14 @@ class AmoAbstract:
 
             return self._requesting(path, requester, json, params, headers_without_token, True)
         if response.status_code < 200 or response.status_code > 204:
-            error_message = 'Something wrong'
-            if response.text:
-                error_message = response.json()
+            response_json = '' if response.text else response.json()
 
-            raise AmoException(error_message)
+            raise AmoException(f'Request Error: '
+                               f'\n URL -> {response.url} '
+                               f'\n Method -> {requester.__name__} '
+                               f'\n Params -> {pformat(params)}'
+                               f'\n Json -> {pformat(response_json)}'
+                               f'\n Headers -> {pformat(headers)}')
 
         return response.json()
 
