@@ -238,11 +238,12 @@ class AmoAbstract:
 
         return self._links_entities(id_from, [data], link)
 
-    def _links_entities(self, id_from: int, data: list, link: bool = True) -> dict:
+    def _links_entities(self, id_from: int, data: list, link: bool = True) -> list:
         entity = self.__class__.__name__.lower()
         url = f'api/v4/{entity}/{int(id_from)}/' + ('link' if link else 'unlink')
+        response = self._requesting(url, self._method_post, json=data)
 
-        return self._requesting(url, self._method_post, json=data)
+        return self._prepare_response(response, 'links')
 
     def _prepare_response(self, response: dict, entity_key: str) -> dict:
         if '_embedded' in response:
