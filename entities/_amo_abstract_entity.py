@@ -75,13 +75,14 @@ class AmoAbstract:
 
             return self._requesting(path, requester, json, params, headers_without_token, True)
         if response.status_code < 200 or response.status_code > 204:
-            response_json = '' if response.text else response.json()
+            response_json = '' if not response.text else response.json()
 
             raise AmoException(f'Request Error: '
                                f'\n URL -> {response.url} '
                                f'\n Method -> {requester.__name__} '
-                               f'\n Params -> {pformat(params)}'
-                               f'\n Json -> {pformat(response_json)}'
+                               f'\n Request Params -> {pformat(params)}'
+                               f'\n Request Json -> {pformat(json)}'
+                               f'\n Response Json -> {pformat(response_json)}'
                                f'\n Headers -> {pformat(headers)}')
 
         return response.json()
@@ -148,14 +149,14 @@ class AmoAbstract:
                     tmp['subtype'] = cf['subtype']
 
                 new_custom_fields.append({'field_id': id, 'values': [tmp]})
-            elif isinstance(cf, dict) and not 'value' in cf:
-                cf_filter = {}
+            elif isinstance(cf, list):
+                cf_filter = []
 
-                for key, value in cf.items():
+                for value in cf:
                     if value == None:
                         continue
 
-                    cf_filter[key] = value
+                    cf_filter.append(value)
                 new_custom_fields.append({'field_id': id, 'values': cf_filter})
 
         return new_custom_fields

@@ -36,7 +36,7 @@ class Contacts(AmoAbstract):
                 data['name'] = name[1]
 
         if user_id != None:
-            data['responsible_user_id'] = int
+            data['responsible_user_id'] = user_id
         if custom_fields != None:
             data['custom_fields_values'] = self._map_custom_fields(custom_fields)
         if tags != None:
