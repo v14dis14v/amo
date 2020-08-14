@@ -75,7 +75,11 @@ class AmoAbstract:
 
             return self._requesting(path, requester, json, params, headers_without_token, True)
         if response.status_code < 200 or response.status_code > 204:
-            raise AmoException('Something wrong')
+            error_message = 'Something wrong'
+            if response.text:
+                error_message = response.json()
+
+            raise AmoException(error_message)
 
         return response.json()
 
@@ -153,7 +157,11 @@ class AmoAbstract:
 
         return new_custom_fields
 
-    def _some_entity_request(self, method: callable, params: dict = None, add_url: str = None, strip_response: bool = True):
+    def _some_entity_request(self,
+                             method: callable,
+                             params: dict = None,
+                             add_url: str = None,
+                             strip_response: bool = True):
         entity = self.__class__.__name__.lower()
         lead_url = 'api/v4/' + entity
         json = None
@@ -213,7 +221,12 @@ class AmoAbstract:
             return ''
         return re.compile(r'[^\d]').sub('', phone)
 
-    def _link_entities(self, id_from: int, to_entity: str, to_id: int, metadata: dict = None, link: bool = True) -> dict:
+    def _link_entities(self,
+                       id_from: int,
+                       to_entity: str,
+                       to_id: int,
+                       metadata: dict = None,
+                       link: bool = True) -> dict:
         data = {'to_entity_id': to_id, 'to_entity_type': to_entity}
 
         if metadata:
