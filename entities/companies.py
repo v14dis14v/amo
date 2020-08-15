@@ -37,8 +37,27 @@ class Companies(AmoAbstract):
 
         return response[0]['id']
 
-    def set(self):
-        pass
+    def update(self,
+               id: int,
+               name: str,
+               user_id: int = None,
+               custom_fields: dict = None,
+               tags: dict = None) -> dict:
+
+        data = {'id': id}
+
+        if name != None:
+            data['name'] = name
+        if user_id != None:
+            data['responsible_user_id'] = int
+        if custom_fields != None:
+            data['custom_fields_values'] = self._map_custom_fields(custom_fields)
+        if tags != None:
+            data['_embedded']['tags'] = []
+            for tag_id, tag in tags.items():
+                data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
+
+        return self._some_entity_request(method=self._method_post, params=[data])
 
     def get(self,
             id: int,
@@ -72,7 +91,7 @@ class Companies(AmoAbstract):
                 query: Union[str, int] = None,
                 filter: dict = None,
                 order: dict = None) -> list:
-        """
+        """name
         Запрос всех Компаний
         :param company_with: Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую.
         :param query: Поисковый запрос (Осуществляет поиск по заполненным полям сущности)

@@ -49,8 +49,46 @@ class Leads(AmoAbstract):
 
         return response[0]['id']
 
-    def set(self):
-        pass
+    def update(self,
+               id: int,
+               name: str = None,
+               price: int = None,
+               status_id: Union[dict, int] = None,
+               user_id: int = None,
+               custom_fields: dict = None,
+               tags: dict = None) -> dict:
+        """
+        Создание 1 Сделки
+        :param name: Название Сделки
+        :param price: Бюджет
+        :param status_id: Статус(можно указать словарь {pipeline_id: status_id})
+        :param user_id: Ответственный за Сделку
+        :param custom_fields: Кастомные поля {cf_id: {'vale': value}}
+        :param tags: Тэги
+
+        :return: int: id созданной Сдлеки
+        """
+        data = {'id': id}
+
+        if name != None:
+            data['name'] = name
+        if price != None:
+            data['price'] = price
+        if isinstance(status_id, dict):
+            data['pipeline_id'] = next(iter(status_id))
+            data['status_id'] = status_id[data['pipeline_id']]
+        elif status_id:
+            data['status_id'] = status_id
+        if user_id != None:
+            data['responsible_user_id'] = user_id
+        if custom_fields != None:
+            data['custom_fields_values'] = self._map_custom_fields(custom_fields)
+        if tags != None:
+            data['_embedded']['tags'] = []
+            for tag_id, tag in tags.items():
+                data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
+
+        return self._some_entity_request(method=self._method_post, params=[data])
 
     def get(self,
             id: int,

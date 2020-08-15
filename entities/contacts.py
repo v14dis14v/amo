@@ -8,12 +8,7 @@ class Contacts(AmoAbstract):
     Класс для работы с сущностью Контакт
     """
 
-    def add(self,
-            name: Union[str, tuple],
-            user_id: int = None,
-            custom_fields: dict = None,
-            tags: dict = None
-            ) -> int:
+    def add(self, name: Union[str, tuple], user_id: int = None, custom_fields: dict = None, tags: dict = None) -> int:
         """
         Создание 1 Контакта
         :param name: Название Контакта Если (string) то запишется в поле 'name',
@@ -48,8 +43,33 @@ class Contacts(AmoAbstract):
 
         return response[0]['id']
 
-    def set(self):
-        pass
+    def update(self, id: int,
+               name: Union[str, tuple] = None,
+               user_id: int = None,
+               custom_fields: dict = None,
+               tags: dict = None) -> dict:
+        data = {'id': id}
+
+        if name != None:
+            if isinstance(name, str):
+                data['name'] = name
+            else:
+                if 0 in name and name[0]:
+                    data['first_name'] = name[0]
+                    data['last_name'] = None if not 1 in name else name[1]
+                elif 1 in name and name[1]:
+                    data['name'] = name[1]
+
+        if user_id != None:
+            data['responsible_user_id'] = user_id
+        if custom_fields != None:
+            data['custom_fields_values'] = self._map_custom_fields(custom_fields)
+        if tags != None:
+            data['_embedded']['tags'] = []
+            for tag_id, tag in tags.items():
+                data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
+
+        return self._some_entity_request(method=self._method_patch, params=[data])
 
     def get(self,
             id: int,

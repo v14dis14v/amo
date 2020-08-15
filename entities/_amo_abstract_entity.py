@@ -30,7 +30,7 @@ class AmoAbstract:
 
         self._method_get = requests.get
         self._method_post = requests.post
-        self._method_put = requests.put
+        self._method_patch = requests.patch
         self._method_delete = requests.delete
 
     def _requesting(self,
@@ -172,7 +172,7 @@ class AmoAbstract:
 
         if add_url != None:
             lead_url += '/' + add_url
-        if method.__name__ == 'post' or method.__name__ == 'put':
+        if method.__name__ == 'post' or method.__name__ == 'patch':
             json = params
             params = None
 
