@@ -6,6 +6,13 @@ class Catalogs(AmoAbstract):
         pass
 
     def add_element(self, catalog_id: int, name: str, custom_fields_values: dict = None) -> int:
+        """
+        Добавление элемента Каталога
+        :param catalog_id:
+        :param name:
+        :param custom_fields_values:
+        :return:
+        """
         json = {'name': name}
 
         if custom_fields_values != None:
@@ -16,9 +23,16 @@ class Catalogs(AmoAbstract):
         return response[0]['id']
 
     def add_elements(self, catalog_id: int, data: list) -> dict:
+        """
+        Добавление элементов Каталога
+        :param catalog_id:
+        :param data:
+        :return:
+        """
         response = self._some_entity_request(add_url=f'{str(catalog_id)}/elements',
                                              method=self._method_post,
                                              params=data)
+
 
         return self._prepare_response(response, 'elements')
 

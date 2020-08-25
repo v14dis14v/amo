@@ -166,6 +166,14 @@ class AmoAbstract:
                              params: dict = None,
                              add_url: str = None,
                              strip_response: bool = True):
+        """
+        Запрос в определённую сущность
+        :param method:
+        :param params:
+        :param add_url:
+        :param strip_response:
+        :return:
+        """
         entity = self.__class__.__name__.lower()
         lead_url = 'api/v4/' + entity
         json = None
@@ -204,6 +212,15 @@ class AmoAbstract:
                               task_type: int,
                               complete_till: datetime,
                               user: int = None) -> int:
+        """
+        Добавление Задачи в сущность
+        :param text:
+        :param id:
+        :param task_type:
+        :param complete_till:
+        :param user:
+        :return:
+        """
         entity = self.__class__.__name__.lower()
         data = {
             'text': text,
@@ -221,8 +238,16 @@ class AmoAbstract:
         return self._prepare_response(response, 'tasks')[0]['id']
 
     def phone_clear(self, phone: str) -> str:
+        """
+        Очистка телефона от лишних символов
+
+        :param phone:
+        :return:
+        """
+
         if len(phone) < 7:
             return ''
+
         return re.compile(r'[^\d]').sub('', phone)
 
     def _link_entities(self,
@@ -231,6 +256,15 @@ class AmoAbstract:
                        to_id: int,
                        metadata: dict = None,
                        link: bool = True) -> dict:
+        """
+        Связка 1 сущности с дргуой
+        :param id_from:
+        :param to_entity:
+        :param to_id:
+        :param metadata:
+        :param link:
+        :return:
+        """
         data = {'to_entity_id': to_id, 'to_entity_type': to_entity}
 
         if metadata:
@@ -239,6 +273,13 @@ class AmoAbstract:
         return self._links_entities(id_from, [data], link)
 
     def _links_entities(self, id_from: int, data: list, link: bool = True) -> list:
+        """
+        Привязка между несколькими сущностями
+        :param id_from:
+        :param data:
+        :param link:
+        :return:
+        """
         entity = self.__class__.__name__.lower()
         url = f'api/v4/{entity}/{int(id_from)}/' + ('link' if link else 'unlink')
         response = self._requesting(url, self._method_post, json=data)
@@ -255,6 +296,10 @@ class AmoAbstract:
         return response
 
     def save_tokens(self):
+        """
+        Абстрактный метод сохранения токенов
+        :return:
+        """
         pass
 
 

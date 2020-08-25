@@ -30,6 +30,12 @@ class Amo(AmoAbstract):
         return super()._auth(code, refresh)
 
     def get_account(self, account_with: str = None) -> dict:
+        """
+        Получение информации об аккаунте
+
+        :param account_with: Параметры запроса данных аккаунта
+        :return: dict
+        """
         data = {}
 
         if account_with != None:
@@ -40,9 +46,15 @@ class Amo(AmoAbstract):
     def combine_some_unused_fields(self,
                                    custom_fields: Union[dict, list],
                                    fields: Union[list, str],
-                                   is_email: str = True,
-                                   with_id: bool = True) -> dict:
-        """Ищет неисползуемые элементы в кастомных полях и если они есть """
+                                   is_email: str = True) -> dict:
+        """
+        Ищет неисползуемые элементы в кастомных полях и если они есть, то комбинирует с уже имеющимися кастомными полями
+
+        :param custom_fields: Кастомные поля
+        :param fields:
+        :param is_email:
+        :return: dict
+        """
         cf_data = {}
 
         if 'custom_fields_values' in custom_fields:
@@ -62,24 +74,31 @@ class Amo(AmoAbstract):
             if custom_field['field_code'] == field_code:
                 updated = False
                 cf_id = custom_field['field_id']
-                entity_fields = self.get_custom_fields_value(custom_fields, cf_id, True)
+                entity_fields = custom_field['values']
 
-                if entity_fields:
-                    cf_data[cf_id] = entity_fields
-                    entity_fields_values = [
-                        entity_field['value'] if is_email
-                        else self.phone_clear(entity_field['value']) for entity_field in entity_fields]
+                cf_data[cf_id] = entity_fields
+                entity_fields_values = [
+                    entity_field['value'] if is_email
+                    else self.phone_clear(entity_field['value']) for entity_field in entity_fields]
 
-                    for field in fields:
-                        if not field in entity_fields_values:
-                            cf_data[cf_id].append({'value': field, 'enum_code': 'WORK'})
-                            updated = True
+                for field in fields:
+                    if not field in entity_fields_values:
+                        cf_data[cf_id].append({'value': field, 'enum_code': 'WORK'})
+                        updated = True
 
                 return cf_data if updated else dict()
 
         return cf_data
 
     def get_custom_fields_value(self, custom_fields: dict, id: int, all_values: bool = False):
+        """
+        Получение значения кастомного поля
+
+        :param custom_fields: Словарь кастомных полей
+        :param id: Идентификатор кастомного поля
+        :param all_values: Флаг означающий, что вернуть нужно не значение а все элементы кастомного поля
+        :return: mixed
+        """
         if not custom_fields:
             return False
 
@@ -92,8 +111,20 @@ class Amo(AmoAbstract):
 
         return False
 
-    def set_save_tokens(self, save_tokens: callable):
+    def set_save_tokens(self, save_tokens: callable) -> None:
+        """
+        Переопределение метода сохранения токенов в БД
+
+        :param save_tokens: Функция для переопределения метода сохранения токенов в БД
+        :return: None
+        """
         AmoAbstract.save_tokens = save_tokens
 
-    def set_user(self, user):
+    def set_user(self, user) -> None:
+        """
+        Переопределение атрибута "пользователь"
+
+        :param user: Объект пользователя
+        :return: None
+        """
         AmoAbstract.user = user
