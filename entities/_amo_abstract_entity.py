@@ -83,7 +83,7 @@ class AmoAbstract:
                                f'\n Request Params -> {pformat(params)}'
                                f'\n Request Json -> {pformat(json)}'
                                f'\n Response Json -> {pformat(response_json)}'
-                               f'\n Headers -> {pformat(headers)}')
+                               f'\n Headers -> {pformat(headers_without_token)}')
 
         return response.json()
 
