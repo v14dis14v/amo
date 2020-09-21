@@ -245,9 +245,6 @@ class AmoAbstract:
         :return:
         """
 
-        if len(phone) < 7:
-            return ''
-
         return re.compile(r'[^\d]').sub('', phone)
 
     def _link_entities(self,
