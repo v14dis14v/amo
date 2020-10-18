@@ -283,7 +283,7 @@ class AmoAbstract:
 
         return self._prepare_response(response, 'links')
 
-    def _get_custom_fields(self, id: int) -> list:
+    def _get_custom_fields(self, id: int = None) -> list:
         url = 'custom_fields/' + (id if id else '')
         params = {'page': 1, 'limit': 250}
         results = []
@@ -296,6 +296,39 @@ class AmoAbstract:
             if len(response) < params['limit']:
                 break
         return results
+
+    def _update_custom_field(self, id: int, name: str = None, options: dict = None):
+        url = f'custom_fields/{id}'
+        params = {}
+
+        if name:
+            params['name'] = name
+
+        if options:
+            if 'code' in options:
+                params['code'] = options['code']
+            if 'sort' in options:
+                params['sort'] = options['sort']
+            if 'group_id' in options:
+                params['group_id'] = options['group_id']
+            if 'is_api_only' in options:
+                params['is_api_only'] = options['is_api_only']
+            if 'required_statuses' in options:
+                params['required_statuses'] = options['required_statuses']
+            if 'settings' in options:
+                params['settings'] = options['settings']
+            if 'is_visible' in options:
+                params['is_visible'] = options['is_visible']
+            if 'is_required' in options:
+                params['is_required'] = options['is_required']
+            if 'remind' in options:
+                params['remind'] = options['remind']
+            if 'enums' in options:
+                params['enums'] = options['enums']
+            if 'nested' in options:
+                params['nested'] = options['nested']
+
+        return self._some_entity_request(self._method_patch, params, url)
 
     def _prepare_response(self, response: dict, entity_key: str) -> dict:
         if '_embedded' in response:

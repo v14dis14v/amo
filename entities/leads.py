@@ -155,8 +155,11 @@ class Leads(AmoAbstract):
 
         return results
 
-    def get_custom_fields(self, id: int) -> list:
+    def get_custom_fields(self, id: int = None) -> list:
         return self._get_custom_fields(id)
+
+    def update_custom_field(self, id: int, name: str = None, options: dict = None):
+        return self._update_custom_field(id, name, options)
 
     def link(self, id_from: int, to_entity: str, to_id: int, metadata: dict = None, link: bool = True) -> dict:
         """Привязывает сущность к Сделке"""
