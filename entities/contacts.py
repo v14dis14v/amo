@@ -132,7 +132,7 @@ class Contacts(AmoAbstract):
             results.extend(response)
             params['page'] += 1
 
-            if len(response) < 250:
+            if len(response) < params['limit']:
                 break
 
         return results

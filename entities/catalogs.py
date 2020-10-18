@@ -64,7 +64,7 @@ class Catalogs(AmoAbstract):
             else:
                 break
 
-            if len(response) < 250:
+            if len(response) < params['limit']:
                 break
 
         return results

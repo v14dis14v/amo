@@ -150,13 +150,13 @@ class Leads(AmoAbstract):
             results.extend(response)
             params['page'] += 1
 
-            if len(response) < 250:
+            if len(response) < params['limit']:
                 break
 
         return results
 
-    def delete(self):
-        pass
+    def get_custom_fields(self, id: int) -> list:
+        return self._get_custom_fields(id)
 
     def link(self, id_from: int, to_entity: str, to_id: int, metadata: dict = None, link: bool = True) -> dict:
         """Привязывает сущность к Сделке"""

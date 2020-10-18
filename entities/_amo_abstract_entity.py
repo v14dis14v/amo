@@ -283,6 +283,20 @@ class AmoAbstract:
 
         return self._prepare_response(response, 'links')
 
+    def _get_custom_fields(self, id: int) -> list:
+        url = 'custom_fields/' + (id if id else '')
+        params = {'page': 1, 'limit': 250}
+        results = []
+
+        while True:
+            response = self._some_entity_request(method=self._method_get, params=params, add_url=url)
+            results.extend(response)
+            params['page'] += 1
+
+            if len(response) < params['limit']:
+                break
+        return results
+
     def _prepare_response(self, response: dict, entity_key: str) -> dict:
         if '_embedded' in response:
             response = response['_embedded']
