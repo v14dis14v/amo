@@ -290,6 +290,9 @@ class AmoAbstract:
 
         while True:
             response = self._some_entity_request(method=self._method_get, params=params, add_url=url)
+            if 'custom_fields' in response:
+                response = response['custom_fields']
+
             results.extend(response)
             params['page'] += 1
 
@@ -328,7 +331,11 @@ class AmoAbstract:
             if 'nested' in options:
                 params['nested'] = options['nested']
 
-        return self._some_entity_request(self._method_patch, params, url)
+        response = self._some_entity_request(self._method_patch, params, url)
+        if 'custom_fields' in response:
+            return response['custom_fields']
+
+        return response
 
     def _prepare_response(self, response: dict, entity_key: str) -> dict:
         if '_embedded' in response:
