@@ -116,7 +116,7 @@ class Leads(AmoAbstract):
             params['order'] = order
         return self._some_entity_request(self._method_get, params, str(id), strip_response=False)
 
-    def getList(self,
+    def get_list(self,
                 lead_with: str = None,
                 query: Union[str, int] = None,
                 filter: dict = None,
@@ -176,3 +176,41 @@ class Leads(AmoAbstract):
     def add_task(self, text: str, id: int, task_type: int, complete_till: datetime, user: int = None) -> int:
         """Создание примечания в Сделку"""
         return self._add_some_entity_task(text, id, task_type, complete_till, user)
+
+    def get_pipelines(self, pipeline_id: int = None) -> dict:
+        """
+        Получение воронок/воронки
+        :param pipeline_id:
+        :return:
+        """
+        add_url = 'pipelines'
+
+        if pipeline_id:
+            add_url += '/' + str(pipeline_id)
+
+        response = self._some_entity_request(method=self._method_get, add_url=add_url, strip_response=False)
+
+        if not pipeline_id:
+            response = self._prepare_response(response, 'pipelines')
+
+        return response
+
+    def get_statuses_active(self, pipeline_id: int = None) -> list:
+        """
+        Поиск активных статусов
+        :param pipeline_id:
+        :return:
+        """
+        pipelines = self.get_pipelines(pipeline_id)
+        active_statuses = []
+
+        if pipeline_id:
+            pipelines = [pipelines]
+
+        for pipeline in pipelines:
+            for status in pipeline['_embedded']['statuses']:
+                status_id = status['id']
+                if status_id != 143 and status_id != 142:
+                    active_statuses.append(status_id)
+
+        return active_statuses

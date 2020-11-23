@@ -9,7 +9,7 @@ class Amo(AmoAbstract):
     Основной класс для работы с amoCRM
     """
 
-    def __init__(self, url: str, tokens: dict = None, integration_data: dict = None) -> None:
+    def __init__(self, url: str, tokens: dict = {}, integration_data: dict = {}) -> None:
         super().__init__(url, tokens, integration_data)
 
         self.contacts = Contacts(url, tokens, integration_data)
@@ -46,7 +46,7 @@ class Amo(AmoAbstract):
     def combine_some_unused_fields(self,
                                    custom_fields: Union[dict, list],
                                    fields: Union[list, str],
-                                   is_email: str = True) -> dict:
+                                   is_email: bool = True) -> dict:
         """
         Ищет неисползуемые элементы в кастомных полях и если они есть, то комбинирует с уже имеющимися кастомными полями
 
