@@ -86,12 +86,12 @@ class Companies(AmoAbstract):
 
         return self._some_entity_request(self._method_get, params, str(id), strip_response=False)
 
-    def getList(self,
-                company_with: str = None,
-                query: Union[str, int] = None,
-                filter: dict = None,
-                order: dict = None) -> list:
-        """name
+    def get_list(self,
+                 company_with: str = None,
+                 query: Union[str, int] = None,
+                 filter: dict = None,
+                 order: dict = None) -> list:
+        """
         Запрос всех Компаний
         :param company_with: Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую.
         :param query: Поисковый запрос (Осуществляет поиск по заполненным полям сущности)

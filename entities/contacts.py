@@ -98,11 +98,11 @@ class Contacts(AmoAbstract):
 
         return self._some_entity_request(self._method_get, params, str(id), strip_response=False)
 
-    def getList(self,
-                contact_with: str = None,
-                query: Union[str, int] = None,
-                filter: dict = None,
-                order: dict = None) -> list:
+    def get_list(self,
+                 contact_with: str = None,
+                 query: Union[str, int] = None,
+                 filter: dict = None,
+                 order: dict = None) -> list:
         """
         Запрос всех Контактов
         :param contact_with: Данный параметр принимает строку, в том числе из нескольких значений, указанных через запятую.
@@ -147,7 +147,7 @@ class Contacts(AmoAbstract):
 
         :return dict Контакт
         """
-        contacts = self.getList('catalog_elements,leads,customers', email)
+        contacts = self.get_list('catalog_elements,leads,customers', email)
         for contact in contacts:
             for cf in contact['custom_fields_values']:
                 if 'field_code' in cf and cf['field_code'] == 'EMAIL':
@@ -168,7 +168,7 @@ class Contacts(AmoAbstract):
         if len(clear_phone) < 5:
             return {}
 
-        contacts = self.getList('catalog_elements,leads,customers', phone)
+        contacts = self.get_list('catalog_elements,leads,customers', phone)
         for contact in contacts:
             for cf in contact['custom_fields_values']:
                 if 'field_code' in cf and cf['field_code'] == 'PHONE':
