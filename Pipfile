@@ -7,6 +7,7 @@ verify_ssl = true
 
 [packages]
 requests = "*"
+querystring-parser = {editable = true, git = "https://github.com/v14dis14v/querystring-parser"}
 
 [requires]
 python_version = "3.8"

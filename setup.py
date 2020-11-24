@@ -7,6 +7,6 @@ setup(name='amo',
       author='Vladislav Reshetov',
       author_email='vladislav.reshetow@gmail.com',
       description='Library for working with api amoCRM',
-      install_requires=['requests'],
+      install_requires=['requests', 'querystring-parser'],
       long_description=open('README.md').read(),
       zip_safe=False)

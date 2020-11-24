@@ -4,6 +4,8 @@ from pprint import pformat
 import requests
 import re
 
+from querystring_parser import builder
+
 
 class AmoAbstract:
     """
@@ -184,7 +186,10 @@ class AmoAbstract:
             json = params
             params = None
 
-        response = self._requesting(lead_url, method, params=params, json=json)
+        if params:
+            lead_url += '?' + builder.build(params)
+
+        response = self._requesting(lead_url, method, json=json)
 
         return self._prepare_response(response, entity) if strip_response else response
 
