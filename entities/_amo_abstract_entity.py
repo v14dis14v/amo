@@ -24,11 +24,11 @@ class AmoAbstract:
         """
         self._base_url = 'https://' + url
         self._domain = url.split('.', 1)
-        self._access_token = None if 'access_token' not in tokens else tokens['access_token']
-        self._refresh_token = None if 'refresh_token' not in tokens else tokens['refresh_token']
-        self._integration_id = integration_data['integration_id'] if 'integration_id' in integration_data else None
-        self._secret_key = integration_data['secret_key'] if 'secret_key' in integration_data else None
-        self._redirect_url = integration_data['redirect_url'] if 'redirect_url' in integration_data else None
+        self._access_token = tokens.get('access_token')
+        self._refresh_token = tokens.get('refresh_token')
+        self._integration_id = integration_data.get('integration_id')
+        self._secret_key = integration_data.get('secret_key')
+        self._redirect_url = integration_data.get('redirect_url')
 
         self._method_get = requests.get
         self._method_post = requests.post
