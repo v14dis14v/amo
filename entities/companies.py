@@ -57,7 +57,7 @@ class Companies(AmoAbstract):
             for tag_id, tag in tags.items():
                 data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
 
-        return self._some_entity_request(method=self._method_post, params=[data])
+        return self._some_entity_request(method=self._method_patch, params=[data])
 
     def get(self,
             id: int,
