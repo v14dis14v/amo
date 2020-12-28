@@ -29,7 +29,9 @@ class Companies(AmoAbstract):
         if custom_fields != None:
             data['custom_fields_values'] = self._map_custom_fields(custom_fields)
         if tags != None:
+            data['_embedded'] = {}
             data['_embedded']['tags'] = []
+
             for tag_id, tag in tags.items():
                 data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
 
@@ -53,7 +55,9 @@ class Companies(AmoAbstract):
         if custom_fields != None:
             data['custom_fields_values'] = self._map_custom_fields(custom_fields)
         if tags != None:
+            data['_embedded'] = {}
             data['_embedded']['tags'] = []
+
             for tag_id, tag in tags.items():
                 data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
 
