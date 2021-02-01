@@ -32,8 +32,8 @@ class Companies(AmoAbstract):
             data['_embedded'] = {}
             data['_embedded']['tags'] = []
 
-            for tag_id, tag in tags.items():
-                data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
+            for tag_id in range(len(tags)):
+                data['_embedded']['tags'].append({'id': tag_id, 'name': tags[tag_id]})
 
         response = self._some_entity_request(method=self._method_post, params=[data])
 
@@ -58,8 +58,8 @@ class Companies(AmoAbstract):
             data['_embedded'] = {}
             data['_embedded']['tags'] = []
 
-            for tag_id, tag in tags.items():
-                data['_embedded']['tags'].append({'id': tag_id, 'name': tag})
+            for tag_id in range(len(tags)):
+                data['_embedded']['tags'].append({'id': tag_id, 'name': tags[tag_id]})
 
         return self._some_entity_request(method=self._method_patch, params=[data])
 
