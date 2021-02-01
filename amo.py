@@ -99,11 +99,11 @@ class Amo(AmoAbstract):
         :param all_values: Флаг означающий, что вернуть нужно не значение а все элементы кастомного поля
         :return: mixed
         """
-        if not custom_fields:
-            return False
-
         if 'custom_fields_values' in custom_fields:
             custom_fields = custom_fields['custom_fields_values']
+
+        if custom_fields is None:
+            return False
 
         for custom_field in custom_fields:
             if custom_field['field_id'] == id:
