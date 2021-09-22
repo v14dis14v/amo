@@ -207,7 +207,7 @@ class AmoAbstract:
         if created_by != None:
             data['created_by'] = created_by
 
-        response = self._some_entity_request(self._method_post, [data], str(id))
+        response = self._some_entity_request(self._method_post, [data], str(id) + '/notes')
 
         return response[0]['id']
 
